@@ -32,6 +32,7 @@ struct SessionContainerView: View {
             }
         }
         .animation(Theme.Motion.stageChange, value: engine.stage)
+        .tint(palette.accent)
         .preferredColorScheme(.dark)
     }
 }

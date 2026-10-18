@@ -20,6 +20,8 @@ struct SessionTimeLabel: View {
                 .kerning(1.5)
         }
         .foregroundStyle(frame.isPaused ? Color.white : Theme.ink)
+        // Already very large; beyond this it would outgrow the orb.
+        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
         .padding(.horizontal, Theme.Spacing.xLarge * 1.5)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(spokenDescription)

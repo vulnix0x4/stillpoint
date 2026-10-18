@@ -109,6 +109,14 @@ The Swift Testing suites cover:
 
 Debug builds also have *Settings → Developer* actions to generate sample history or erase everything.
 
+### App icon
+
+The icon is a render of the real orb shader. To regenerate it after changing `Shaders.metal`:
+
+```bash
+xcrun -sdk macosx metal -o /tmp/orb.metallib Stillpoint/Design/Shaders.metal && swift tools/render_icon.swift /tmp/orb.metallib Stillpoint/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon.png 12
+```
+
 ---
 
 ## Architecture

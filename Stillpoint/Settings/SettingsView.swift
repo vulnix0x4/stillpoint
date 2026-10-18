@@ -98,6 +98,7 @@ struct SettingsView: View {
             .onChange(of: dailyGoal, refreshWidgets)
             .onChange(of: paletteName, refreshWidgets)
         }
+        .tint(OrbPalette.named(paletteName).accent)
     }
 
     private func close() {

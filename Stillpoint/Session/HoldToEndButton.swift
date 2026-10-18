@@ -28,9 +28,12 @@ struct HoldToEndButton: View {
             Text(isPressing ? "Keep holding" : "Hold to end")
                 .font(.caption)
                 .foregroundStyle(.secondary)
-                .fixedSize()
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                 .contentTransition(.opacity)
         }
+        .frame(maxWidth: .infinity)
         .contentShape(.rect)
         .onLongPressGesture(minimumDuration: Self.holdDuration, maximumDistance: 40, perform: complete, onPressingChanged: pressingChanged)
         .sensoryFeedback(.impact(weight: .heavy), trigger: completions)

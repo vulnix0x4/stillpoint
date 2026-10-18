@@ -14,8 +14,11 @@ struct StackedLabelStyle: LabelStyle {
             configuration.title
                 .font(.caption)
                 .foregroundStyle(.secondary)
-                .fixedSize()
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         }
+        .frame(maxWidth: .infinity)
         .contentShape(.rect)
     }
 }

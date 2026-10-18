@@ -11,7 +11,7 @@ struct SessionControls: View {
 
     var body: some View {
         GlassEffectContainer(spacing: Theme.Spacing.large) {
-            HStack(alignment: .top, spacing: Theme.Spacing.xLarge) {
+            HStack(alignment: .top, spacing: Theme.Spacing.small) {
                 Button("Park thought", systemImage: "tray.and.arrow.down", action: onPark)
                     .labelStyle(StackedLabelStyle())
 

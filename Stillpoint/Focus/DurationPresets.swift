@@ -9,6 +9,20 @@ struct DurationPresets: View {
     private static let presets = [15, 25, 45, 60, 90]
 
     var body: some View {
+        // At large text sizes the row no longer fits, so it scrolls instead of squeezing.
+        ViewThatFits(in: .horizontal) {
+            chips
+            ScrollView(.horizontal) {
+                chips
+                    .padding(.horizontal, Theme.Spacing.hairline)
+            }
+            .scrollIndicators(.hidden)
+            .scrollClipDisabled()
+        }
+        .sensoryFeedback(.selection, trigger: isFlow)
+    }
+
+    private var chips: some View {
         GlassEffectContainer(spacing: Theme.Spacing.small) {
             HStack(spacing: Theme.Spacing.tight) {
                 ForEach(Self.presets, id: \.self) { preset in
@@ -24,7 +38,6 @@ struct DurationPresets: View {
                 PresetChip(title: "∞", accessibilityTitle: "Open-ended flow", isSelected: isFlow, tint: tint, action: selectFlow)
             }
         }
-        .sensoryFeedback(.selection, trigger: isFlow)
     }
 
     private func select(_ preset: Int) {

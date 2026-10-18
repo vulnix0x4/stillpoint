@@ -14,6 +14,7 @@ struct PresetChip: View {
                 .font(.system(.body, design: .rounded))
                 .bold()
                 .monospacedDigit()
+                .padding(.horizontal, Theme.Spacing.small)
                 .frame(minWidth: 44, minHeight: 44)
                 .foregroundStyle(isSelected ? Theme.ink : Color.primary)
         }

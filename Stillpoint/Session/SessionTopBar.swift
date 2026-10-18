@@ -19,6 +19,8 @@ struct SessionTopBar: View {
             Label(planDescription, systemImage: plan.plannedMinutes == nil ? "infinity" : "timer")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
                 .padding(.horizontal, Theme.Spacing.medium)
                 .padding(.vertical, Theme.Spacing.small)
                 .glassEffect(.regular, in: .capsule)

@@ -53,6 +53,7 @@ struct StandaloneBreathingView: View {
             .padding(.vertical, Theme.Spacing.medium)
         }
         .animation(Theme.Motion.settle, value: pattern)
+        .tint(palette.accent)
         .onAppear(perform: startSound)
         .onDisappear(perform: stopSound)
         .preferredColorScheme(.dark)

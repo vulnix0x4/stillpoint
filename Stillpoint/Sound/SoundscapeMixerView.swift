@@ -4,6 +4,7 @@ import SwiftUI
 struct SoundscapeMixerView: View {
     @Environment(SoundscapeEngine.self) private var sound
     @Environment(\.dismiss) private var dismiss
+    @AppStorage(PreferenceKey.palette) private var paletteName = OrbPalette.ember.rawValue
 
     var body: some View {
         @Bindable var sound = sound
@@ -52,6 +53,7 @@ struct SoundscapeMixerView: View {
                 }
             }
         }
+        .tint(OrbPalette.named(paletteName).accent)
         .presentationDetents([.medium, .large])
         .presentationBackground(.thinMaterial)
         .onAppear(perform: startPreview)

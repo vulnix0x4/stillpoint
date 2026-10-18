@@ -8,9 +8,15 @@ struct SessionOptionsRow: View {
     var tint: Color
     var openMixer: () -> Void
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
+        let layout = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(spacing: Theme.Spacing.small))
+            : AnyLayout(HStackLayout(spacing: Theme.Spacing.small))
+
         GlassEffectContainer(spacing: Theme.Spacing.small) {
-            HStack(spacing: Theme.Spacing.small) {
+            layout {
                 Button(action: openMixer) {
                     OptionLabel(
                         title: "Sound",
