@@ -31,7 +31,7 @@ nonisolated struct StatsCalculator {
         let totals = secondsByDay(records)
         let end = calendar.startOfDay(for: endDay)
         return (0..<days).reversed().compactMap { offset in
-            guard let day = calendar.date(byAdding: .day, value: -offset, to: end) else { return nil }
+            guard let day = self.day(offset: -offset, from: end) else { return nil }
             return DayTotal(date: day, minutes: (totals[day] ?? 0) / 60)
         }
     }
@@ -47,6 +47,12 @@ nonisolated struct StatsCalculator {
         return totalSeconds(records, in: week)
     }
 
+    /// The start of the day `offset` days away. Re-normalising matters on days when
+    /// daylight saving begins at midnight, where adding a day can land at 1 AM.
+    func day(offset: Int, from date: Date) -> Date? {
+        calendar.date(byAdding: .day, value: offset, to: date).map(calendar.startOfDay)
+    }
+
     // MARK: - Streaks
 
     private func qualifyingDays(_ records: [SessionRecord]) -> Set<Date> {
@@ -59,13 +65,13 @@ nonisolated struct StatsCalculator {
         let days = qualifyingDays(records)
         var day = calendar.startOfDay(for: now)
         if !days.contains(day) {
-            guard let yesterday = calendar.date(byAdding: .day, value: -1, to: day) else { return 0 }
+            guard let yesterday = self.day(offset: -1, from: day) else { return 0 }
             day = yesterday
         }
         var streak = 0
         while days.contains(day) {
             streak += 1
-            guard let previous = calendar.date(byAdding: .day, value: -1, to: day) else { break }
+            guard let previous = self.day(offset: -1, from: day) else { break }
             day = previous
         }
         return streak
@@ -77,7 +83,7 @@ nonisolated struct StatsCalculator {
         var current = 0
         var previous: Date?
         for day in days {
-            if let previous, calendar.date(byAdding: .day, value: 1, to: previous) == day {
+            if let previous, self.day(offset: 1, from: previous) == day {
                 current += 1
             } else {
                 current = 1
@@ -150,7 +156,7 @@ nonisolated struct StatsCalculator {
 
         return (0..<weeks).map { week in
             (0..<7).compactMap { weekday in
-                guard let day = calendar.date(byAdding: .day, value: week * 7 + weekday, to: firstWeek) else { return nil }
+                guard let day = self.day(offset: week * 7 + weekday, from: firstWeek) else { return nil }
                 return HeatmapCell(date: day, minutes: (totals[day] ?? 0) / 60, isFuture: day > today)
             }
         }

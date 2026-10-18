@@ -109,4 +109,18 @@ struct StatsCalculatorTests {
         #expect(stats.averageDepth(records) == 3)
         #expect(stats.averageDepth([]) == nil)
     }
+
+    @Test func streaksSurviveDaylightSavingStartingAtMidnight() throws {
+        // In Santiago the clocks jumped from 00:00 to 01:00 on 7 September 2025.
+        var santiago = Calendar(identifier: .gregorian)
+        santiago.timeZone = try #require(TimeZone(identifier: "America/Santiago"))
+        let stats = StatsCalculator(calendar: santiago)
+        func noon(_ day: Int) -> Date {
+            santiago.date(from: DateComponents(year: 2025, month: 9, day: day, hour: 12)) ?? .now
+        }
+        let records = [6, 7, 8].map { SessionRecord(start: noon($0), focused: 1_800) }
+        #expect(stats.currentStreak(records, now: noon(8)) == 3)
+        #expect(stats.longestStreak(records) == 3)
+        #expect(stats.dailyTotals(records, days: 3, endingOn: noon(8)).map(\.minutes) == [30, 30, 30])
+    }
 }

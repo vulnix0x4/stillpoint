@@ -26,6 +26,8 @@ nonisolated final class RainGenerator: SignalGenerator {
     private var intensity = RandomWalk(lower: 0.72, upper: 1, rate: 0.000_02)
     private let drops: UnsafeMutableBufferPointer<Drop>
     private let dropChance: Float
+    /// Highest pitch a drop may chirp up to: about 8 kHz.
+    private let maxIncrement: Float
 
     init(sampleRate: Float) {
         self.sampleRate = sampleRate
@@ -36,6 +38,7 @@ nonisolated final class RainGenerator: SignalGenerator {
         drops = .allocate(capacity: 32)
         drops.initialize(repeating: Drop())
         dropChance = 70 / sampleRate
+        maxIncrement = 2 * .pi * 8_000 / sampleRate
     }
 
     deinit {
@@ -58,7 +61,8 @@ nonisolated final class RainGenerator: SignalGenerator {
                 sampleRight += value * drops[index].gainRight
                 drops[index].phase += drops[index].increment
                 if drops[index].phase > 2 * .pi { drops[index].phase -= 2 * .pi }
-                drops[index].increment *= drops[index].chirp
+                // The bubble's pitch rises, but never toward Nyquist where it would alias.
+                drops[index].increment = min(drops[index].increment * drops[index].chirp, maxIncrement)
                 drops[index].amplitude *= drops[index].decay
                 if drops[index].amplitude < 0.000_5 {
                     drops[index].isActive = false

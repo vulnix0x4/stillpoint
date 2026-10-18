@@ -176,6 +176,64 @@ struct SessionEngineTests {
         #expect(try sessions().first?.isFinalized == true)
     }
 
+    @Test func endingAtTheGoalDoesNotCountTimeAwayLater() throws {
+        defaults.set(CompletionBehavior.endSession.rawValue, forKey: PreferenceKey.completionBehavior)
+        let engine = makeEngine()
+        engine.begin(SessionPlan(plannedMinutes: 5))
+        // The app wakes two hours later.
+        engine.tick(at: .now.addingTimeInterval(7_200))
+        #expect(engine.stage == .reflecting)
+        let focused = try #require(engine.activeSession?.focusedDuration)
+        #expect(abs(focused - 300) < 2)
+        engine.discardSession()
+    }
+
+    @Test func checkpointsRecordProgressSoFar() throws {
+        let engine = makeEngine()
+        engine.begin(SessionPlan(plannedMinutes: 25))
+        engine.checkpoint(at: .now.addingTimeInterval(600))
+        let focused = try #require(engine.activeSession?.focusedDuration)
+        #expect(abs(focused - 600) < 2)
+        engine.discardSession()
+    }
+
+    @Test func relaunchingLongAfterTheGoalClosesTheSessionAtTheGoal() throws {
+        let first = makeEngine()
+        first.begin(SessionPlan(intention: "Forgotten", plannedMinutes: 5))
+
+        let relaunched = makeEngine()
+        relaunched.restoreIfNeeded(at: .now.addingTimeInterval(3 * 3_600))
+        #expect(relaunched.stage == .reflecting)
+        let focused = try #require(relaunched.activeSession?.focusedDuration)
+        #expect(abs(focused - 300) < 2)
+        relaunched.discardSession()
+    }
+
+    @Test func aShortcutDoesNotReplaceARunningSession() throws {
+        let first = makeEngine()
+        first.begin(SessionPlan(intention: "Original", plannedMinutes: 45))
+        let id = try #require(first.activeSession?.id)
+
+        let relaunched = makeEngine()
+        relaunched.startFromShortcut(minutes: 25, intention: "New")
+        #expect(relaunched.activeSession?.id == id)
+        #expect(relaunched.plan.intention == "Original")
+        relaunched.discardSession()
+    }
+
+    @Test func backgroundParkingAttachesToTheStoredSession() throws {
+        let first = makeEngine()
+        first.begin(SessionPlan(intention: "Running", plannedMinutes: 45))
+        let id = try #require(first.activeSession?.id)
+
+        // A shortcut launches a fresh process; the UI hasn't restored anything.
+        let background = makeEngine()
+        background.parkThought("From the Action button")
+        let thoughts = try container.mainContext.fetch(FetchDescriptor<ParkedThought>())
+        #expect(thoughts.first?.session?.id == id)
+        first.discardSession()
+    }
+
     @Test func abandonedSessionsAreTidiedOnLaunch() throws {
         let context = container.mainContext
         let substantial = FocusSession(startDate: .now.addingTimeInterval(-3_600), plannedDuration: 1_500, intention: "Long", usedArrival: false, soundscapeName: nil)

@@ -61,6 +61,6 @@ struct FocusLiveActivity: Widget {
 #Preview("Lock Screen", as: .content, using: FocusActivityAttributes(intention: "Draft the introduction", plannedDuration: 1_500, paletteName: "ember")) {
     FocusLiveActivity()
 } contentStates: {
-    FocusActivityAttributes.ContentState(phase: .focusing, goalDate: .now.addingTimeInterval(900), effectiveStart: .now.addingTimeInterval(-600), frozenSeconds: 900, depthTitle: "Focused")
-    FocusActivityAttributes.ContentState(phase: .paused, goalDate: nil, effectiveStart: .now.addingTimeInterval(-600), frozenSeconds: 900, depthTitle: "Focused")
+    FocusActivityAttributes.ContentState(phase: .focusing, goalDate: .now.addingTimeInterval(900), effectiveStart: .now.addingTimeInterval(-600), frozenSeconds: 900, depthTitle: "Focused", isOvertime: false)
+    FocusActivityAttributes.ContentState(phase: .paused, goalDate: nil, effectiveStart: .now.addingTimeInterval(-600), frozenSeconds: 900, depthTitle: "Focused", isOvertime: false)
 }

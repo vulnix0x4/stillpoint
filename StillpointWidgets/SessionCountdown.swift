@@ -8,7 +8,8 @@ struct SessionCountdown: View {
     var body: some View {
         switch state.phase {
         case .paused:
-            Text(Duration.seconds(Int(state.frozenSeconds)).formatted(.time(pattern: .minuteSecond)))
+            let frozen = Duration.seconds(Int(state.frozenSeconds)).formatted(.time(pattern: .minuteSecond))
+            Text(state.isOvertime ? "+\(frozen)" : frozen)
         case .overtime:
             if let goalDate = state.goalDate {
                 Text("+\(Text(goalDate, style: .timer))")
@@ -16,8 +17,10 @@ struct SessionCountdown: View {
                 Text(state.effectiveStart, style: .timer)
             }
         case .focusing:
-            if let goalDate = state.goalDate, goalDate > .now {
-                Text(timerInterval: Date.now...goalDate, countsDown: true)
+            // `.timer` counts down to the goal and then keeps counting up past it, so the
+            // display stays alive even if the app isn't around to switch to overtime.
+            if let goalDate = state.goalDate {
+                Text(goalDate, style: .timer)
             } else {
                 Text(state.effectiveStart, style: .timer)
             }

@@ -18,7 +18,7 @@ final class LiveActivityController {
         do {
             let activity = try FocusActivity.request(
                 attributes: attributes,
-                content: ActivityContent(state: state, staleDate: nil),
+                content: ActivityContent(state: state, staleDate: Self.staleDate(for: state)),
                 pushType: nil
             )
             activityID = activity.id
@@ -38,7 +38,7 @@ final class LiveActivityController {
 
     func update(_ state: FocusActivityAttributes.ContentState) {
         guard let activityID else { return }
-        let content = ActivityContent(state: state, staleDate: nil)
+        let content = ActivityContent(state: state, staleDate: Self.staleDate(for: state))
         Task {
             await Self.update(activityID: activityID, content: content)
         }
@@ -52,6 +52,11 @@ final class LiveActivityController {
         Task {
             await Self.end(activityIDs: existing)
         }
+    }
+
+    /// Past the goal, the content is out of date until the app confirms overtime.
+    private static func staleDate(for state: FocusActivityAttributes.ContentState) -> Date? {
+        state.phase == .focusing ? state.goalDate : nil
     }
 
     private nonisolated static func update(activityID: String, content: ActivityContent<FocusActivityAttributes.ContentState>) async {

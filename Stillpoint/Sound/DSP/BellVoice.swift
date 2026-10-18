@@ -54,12 +54,14 @@ nonisolated final class BellVoice: @unchecked Sendable {
     /// Strikes the bowl. Safe to call from any thread.
     func ring(strength value: Float) {
         strength.set(value)
-        strikes.add(1, ordering: .relaxed)
+        // Releasing pairs with the render thread's acquiring load, so the new strength is
+        // guaranteed to be visible alongside the new strike.
+        strikes.add(1, ordering: .releasing)
     }
 
     /// Adds the bowl's sound on top of whatever is already in the buffers.
     func render(addingTo left: UnsafeMutablePointer<Float>, _ right: UnsafeMutablePointer<Float>, frames: Int) {
-        let pending = strikes.load(ordering: .relaxed)
+        let pending = strikes.load(ordering: .acquiring)
         if pending != handledStrikes {
             handledStrikes = pending
             let loudness = strength.value

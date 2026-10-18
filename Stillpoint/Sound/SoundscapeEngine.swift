@@ -35,6 +35,7 @@ final class SoundscapeEngine {
     @ObservationIgnored private var stopTask: Task<Void, Never>?
     @ObservationIgnored private var bellTask: Task<Void, Never>?
     @ObservationIgnored private var observers: [any NSObjectProtocol] = []
+    @ObservationIgnored private var configurationObserver: (any NSObjectProtocol)?
     @ObservationIgnored private let logger = Logger(subsystem: "dev.stillpoint", category: "sound")
 
     init(defaults: UserDefaults = .standard) {
@@ -181,15 +182,41 @@ final class SoundscapeEngine {
         ) { [weak self] notification in
             let rawType = notification.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt
             MainActor.assumeIsolated {
-                guard rawType == AVAudioSession.InterruptionType.ended.rawValue else { return }
-                self?.recoverAfterInterruption()
+                if rawType == AVAudioSession.InterruptionType.began.rawValue {
+                    self?.isRunning = false
+                } else if rawType == AVAudioSession.InterruptionType.ended.rawValue {
+                    self?.recoverAfterInterruption()
+                }
             }
         }
         observers.append(token)
+
+        // After a media services reset every audio object is invalid and must be rebuilt.
+        let resetToken = NotificationCenter.default.addObserver(
+            forName: AVAudioSession.mediaServicesWereResetNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated {
+                self?.rebuildAfterReset()
+            }
+        }
+        observers.append(resetToken)
+    }
+
+    private func rebuildAfterReset() {
+        if let configurationObserver {
+            NotificationCenter.default.removeObserver(configurationObserver)
+        }
+        configurationObserver = nil
+        engine = nil
+        renderer = nil
+        isRunning = false
+        recoverAfterInterruption()
     }
 
     private func observeConfigurationChanges(of engine: AVAudioEngine) {
-        let token = NotificationCenter.default.addObserver(
+        configurationObserver = NotificationCenter.default.addObserver(
             forName: .AVAudioEngineConfigurationChange,
             object: engine,
             queue: .main
@@ -198,7 +225,6 @@ final class SoundscapeEngine {
                 self?.recoverAfterInterruption()
             }
         }
-        observers.append(token)
     }
 
     private func recoverAfterInterruption() {

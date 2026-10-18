@@ -146,6 +146,7 @@ StillpointTests/     Swift Testing suites
 
 **Key decisions**
 - **Time is derived, never counted.** `SessionClock` stores the start, the pauses and the plan. Every value is a pure function of `Date`, so backgrounding, suspension and relaunches can't drift the timer.
+- **Unattended sessions don't inflate your stats.** Progress is checkpointed every minute and whenever the app leaves the foreground. A countdown that passes its goal while nobody is around ends at the goal; overtime is capped at an hour (or the planned length, if longer); open-ended sessions stop at four hours. The goal bell only rings if you're actually there for it.
 - **Pure logic, thin views.** Clock, calm, breathing, stats and insights are `nonisolated` value types with no UIKit, SwiftUI or SwiftData dependencies, which keeps them easy to test. The app target uses main-actor default isolation; only the DSP is deliberately nonisolated.
 - **Real-time audio done properly.** The render block is built in a nonisolated context, never main-actor code. It doesn't allocate or lock: the main thread writes `Atomic<UInt32>` targets, and the audio thread smooths toward them per sample. The engine is reference-counted by *reason* (session, preview, breathing, bell), so it fades in and out and stops when nobody needs it.
 - **The orb is one shader** with two inputs that matter, `turbulence` and `energy`. Everything (depth, breathing, the goal bloom, pauses) is expressed through them.

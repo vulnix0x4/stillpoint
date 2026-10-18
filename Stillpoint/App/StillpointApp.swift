@@ -7,6 +7,7 @@ struct StillpointApp: App {
     private let container: ModelContainer
     @State private var sound: SoundscapeEngine
     @State private var engine: SessionEngine
+    @Environment(\.scenePhase) private var scenePhase
 
     init() {
         let container = ModelContainerFactory.make()
@@ -30,6 +31,12 @@ struct StillpointApp: App {
                 .task(restore)
         }
         .modelContainer(container)
+        .onChange(of: scenePhase) { _, phase in
+            // Leaving the foreground is the last reliable moment to save progress.
+            if phase == .background {
+                engine.checkpoint()
+            }
+        }
     }
 
     private func restore() async {

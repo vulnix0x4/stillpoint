@@ -1,3 +1,4 @@
+import Combine
 import SwiftData
 import SwiftUI
 
@@ -18,18 +19,21 @@ struct FocusHomeView: View {
     @State private var isShowingMixer = false
     @State private var isShowingSettings = false
     @State private var isShowingBreathing = false
+    /// "Today" for the header and progress; refreshed at midnight and when the app returns.
+    @State private var today = Date.now
     @FocusState private var isEditingIntention: Bool
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         let palette = OrbPalette.named(paletteName)
-        let today = TodaySummary(records: sessions.map(\.record), now: .now)
+        let summary = TodaySummary(records: sessions.map(\.record), now: today)
 
         NavigationStack {
             ScrollView {
                 VStack(spacing: Theme.Spacing.medium) {
-                    HomeHeader(streak: today.streak, now: .now)
+                    HomeHeader(streak: summary.streak, now: today)
 
-                    TodayProgress(minutes: today.minutes, goal: dailyGoal, sessions: today.sessions, palette: palette)
+                    TodayProgress(minutes: summary.minutes, goal: dailyGoal, sessions: summary.sessions, palette: palette)
 
                     DurationPicker(minutes: $minutes, isFlow: $isFlow, palette: palette)
                         .frame(maxWidth: 262)
@@ -83,6 +87,23 @@ struct FocusHomeView: View {
             }
             .fullScreenCover(isPresented: $isShowingBreathing) {
                 StandaloneBreathingView()
+            }
+        }
+        // A session can start from a shortcut while something else is on screen; clear the
+        // way so its full-screen presentation can actually appear.
+        .onChange(of: engine.isSessionPresented) { _, isPresented in
+            if isPresented {
+                isShowingMixer = false
+                isShowingSettings = false
+                isShowingBreathing = false
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .NSCalendarDayChanged)) { _ in
+            today = .now
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active {
+                today = .now
             }
         }
     }

@@ -60,10 +60,19 @@ struct DurationDial: View {
     }
 
     private var dragGesture: some Gesture {
-        DragGesture(minimumDistance: 0)
+        DragGesture(minimumDistance: 2)
             .onChanged { value in
+                // Only drags that begin on the ring adjust the length; anything starting over
+                // the orb is left to the scroll view.
+                guard isOnRing(value.startLocation) else { return }
                 updateMinutes(for: value.location)
             }
+    }
+
+    private func isOnRing(_ point: CGPoint) -> Bool {
+        let radius = min(size.width, size.height) / 2
+        let distance = hypot(point.x - size.width / 2, point.y - size.height / 2)
+        return distance > radius * 0.62
     }
 
     private func updateMinutes(for location: CGPoint) {

@@ -16,10 +16,13 @@ nonisolated struct FocusActivityAttributes: ActivityAttributes {
         var goalDate: Date?
         /// Origin for count-up displays, already shifted forward by any paused time.
         var effectiveStart: Date
-        /// Seconds to show while paused (remaining for countdowns, elapsed for open sessions).
+        /// Seconds to show while paused: remaining for countdowns, overtime once past the
+        /// goal, elapsed for open sessions.
         var frozenSeconds: TimeInterval
         /// A short human description of how settled the session is, e.g. "Deep focus".
         var depthTitle: String
+        /// Whether the planned time has passed, so paused values read as "+mm:ss".
+        var isOvertime: Bool
     }
 
     var intention: String

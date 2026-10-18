@@ -14,7 +14,7 @@ struct SessionProgressBar: View {
                 } currentValueLabel: {
                     EmptyView()
                 }
-            } else if state.phase == .paused, let planned = attributes.plannedDuration, planned > 0 {
+            } else if state.phase == .paused, !state.isOvertime, let planned = attributes.plannedDuration, planned > 0 {
                 ProgressView(value: max(0, min(1, 1 - state.frozenSeconds / planned)))
             } else {
                 ProgressView(value: 1)

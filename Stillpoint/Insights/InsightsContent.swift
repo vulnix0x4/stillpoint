@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 
 /// The scrolling body of the Insights tab.
@@ -6,9 +7,11 @@ struct InsightsContent: View {
     var palette: OrbPalette
 
     @AppStorage(PreferenceKey.dailyGoalMinutes) private var dailyGoal = PreferenceKey.Default.dailyGoalMinutes
+    @State private var today = Date.now
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
-        let now = Date.now
+        let now = today
         let records = sessions.map(\.record)
         let stats = StatsCalculator()
         let insights = InsightGenerator().insights(for: records, now: now)
@@ -69,5 +72,13 @@ struct InsightsContent: View {
             .padding(.bottom, Theme.Spacing.xLarge)
         }
         .scrollIndicators(.hidden)
+        .onReceive(NotificationCenter.default.publisher(for: .NSCalendarDayChanged)) { _ in
+            today = .now
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active {
+                today = .now
+            }
+        }
     }
 }
