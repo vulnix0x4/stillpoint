@@ -26,12 +26,13 @@ struct FocusHomeView: View {
 
         NavigationStack {
             ScrollView {
-                VStack(spacing: Theme.Spacing.large) {
+                VStack(spacing: Theme.Spacing.medium) {
                     HomeHeader(streak: today.streak, now: .now)
 
+                    TodayProgress(minutes: today.minutes, goal: dailyGoal, sessions: today.sessions, palette: palette)
+
                     DurationPicker(minutes: $minutes, isFlow: $isFlow, palette: palette)
-                        .frame(maxWidth: 360)
-                        .padding(.horizontal, Theme.Spacing.medium)
+                        .frame(maxWidth: 262)
 
                     DurationPresets(minutes: $minutes, isFlow: $isFlow, tint: palette.accent)
 
@@ -44,25 +45,25 @@ struct FocusHomeView: View {
                         tint: palette.accent,
                         openMixer: showMixer
                     )
-
-                    Button(action: begin) {
-                        Text("Begin")
-                            .font(.title3)
-                            .bold()
-                            .foregroundStyle(Theme.ink)
-                            .frame(maxWidth: .infinity, minHeight: 36)
-                    }
-                    .buttonStyle(.glassProminent)
-                    .controlSize(.large)
-
-                    TodayProgress(minutes: today.minutes, goal: dailyGoal, sessions: today.sessions, palette: palette)
-                        .padding(.top, Theme.Spacing.small)
                 }
                 .padding(.horizontal, Theme.Spacing.large)
-                .padding(.bottom, Theme.Spacing.xLarge)
+                .padding(.bottom, Theme.Spacing.medium)
             }
             .scrollIndicators(.hidden)
             .scrollDismissesKeyboard(.interactively)
+            .safeAreaInset(edge: .bottom) {
+                Button(action: begin) {
+                    Text("Begin")
+                        .font(.title3)
+                        .bold()
+                        .foregroundStyle(Theme.ink)
+                        .frame(maxWidth: .infinity, minHeight: 36)
+                }
+                .buttonStyle(.glassProminent)
+                .controlSize(.large)
+                .padding(.horizontal, Theme.Spacing.large)
+                .padding(.bottom, Theme.Spacing.small)
+            }
             .background {
                 AmbientBackground(palette: palette)
             }
@@ -88,18 +89,21 @@ struct FocusHomeView: View {
 
     private func begin() {
         isEditingIntention = false
-        engine.begin(SessionPlan(
+        let plan = SessionPlan(
             intention: intention,
             plannedMinutes: isFlow ? nil : minutes,
             arriveFirst: arriveFirst,
             breathPattern: breathPattern
-        ))
-        intention = ""
+        )
         Task {
+            // Ask before the session starts, so the prompt never lands on top of it and the
+            // completion notification can be scheduled.
             let scheduler = NotificationScheduler()
             if await scheduler.authorizationStatus() == .notDetermined {
                 await scheduler.requestAuthorization()
             }
+            engine.begin(plan)
+            intention = ""
         }
     }
 

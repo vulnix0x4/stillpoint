@@ -13,6 +13,9 @@ nonisolated enum TimeText {
 
     /// "1h 12m" or "42m".
     static func short(_ seconds: TimeInterval) -> String {
+        if seconds > 0, seconds < 60 {
+            return Duration.seconds(Int(seconds)).formatted(.units(allowed: [.seconds], width: .narrow))
+        }
         let minutes = max(0, Int((seconds / 60).rounded()))
         return Duration.seconds(minutes * 60).formatted(.units(allowed: [.hours, .minutes], width: .narrow))
     }

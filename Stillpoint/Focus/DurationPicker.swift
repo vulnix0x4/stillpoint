@@ -8,8 +8,8 @@ struct DurationPicker: View {
 
     var body: some View {
         ZStack {
-            LivingOrb(palette: palette, turbulence: 0.5)
-                .padding(26)
+            LivingOrb(palette: palette, turbulence: 0.35)
+                .padding(6)
 
             DurationDial(minutes: $minutes, isFlow: isFlow, palette: palette)
 

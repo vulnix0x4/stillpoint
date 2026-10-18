@@ -16,6 +16,6 @@ nonisolated struct SessionPlan: Codable, Equatable, Sendable {
     }
 
     var plannedDuration: TimeInterval? {
-        plannedMinutes.map { TimeInterval($0) * 60 }
+        plannedMinutes.map { TimeInterval($0) * LaunchArguments.secondsPerMinute }
     }
 }

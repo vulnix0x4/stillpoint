@@ -1,23 +1,34 @@
 import ActivityKit
 import Foundation
+import os
 
 /// Starts, updates and ends the focus Live Activity.
 ///
-/// `Activity` isn't `Sendable`, so only its identifier crosses into async work; each async
-/// helper looks the activity up again on its own.
+/// `Activity` isn't `Sendable`, so only identifiers cross into async work; each async helper
+/// looks its activities up again on its own. Identifiers to end are captured synchronously, so
+/// ending an old activity can never race with, and end, a newly started one.
 final class LiveActivityController {
     private typealias FocusActivity = Activity<FocusActivityAttributes>
     private var activityID: String?
+    private let logger = Logger(subsystem: "dev.stillpoint", category: "live-activity")
 
     func start(attributes: FocusActivityAttributes, state: FocusActivityAttributes.ContentState) {
         end()
         guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
-        let activity = try? FocusActivity.request(
-            attributes: attributes,
-            content: ActivityContent(state: state, staleDate: nil),
-            pushType: nil
-        )
-        activityID = activity?.id
+        do {
+            let activity = try FocusActivity.request(
+                attributes: attributes,
+                content: ActivityContent(state: state, staleDate: nil),
+                pushType: nil
+            )
+            activityID = activity.id
+        } catch {
+            logger.error("Couldn't start Live Activity: \(error.localizedDescription)")
+        }
+    }
+
+    var isRunning: Bool {
+        activityID != nil
     }
 
     /// Re-attaches to an activity that outlived a previous launch.
@@ -33,10 +44,13 @@ final class LiveActivityController {
         }
     }
 
+    /// Ends every activity that exists right now.
     func end() {
         activityID = nil
+        let existing = FocusActivity.activities.map(\.id)
+        guard !existing.isEmpty else { return }
         Task {
-            await Self.endAll()
+            await Self.end(activityIDs: existing)
         }
     }
 
@@ -45,8 +59,8 @@ final class LiveActivityController {
         await activity.update(content)
     }
 
-    private nonisolated static func endAll() async {
-        for activity in FocusActivity.activities {
+    private nonisolated static func end(activityIDs: [String]) async {
+        for activity in FocusActivity.activities where activityIDs.contains(activity.id) {
             await activity.end(nil, dismissalPolicy: .immediate)
         }
     }

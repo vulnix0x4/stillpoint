@@ -133,7 +133,7 @@ nonisolated struct InsightGenerator {
             id: "weekday",
             symbol: "calendar",
             title: "\(name)s are your strongest day",
-            detail: "You average \(minutes) of focus on \(name)s you work."
+            detail: "On a typical \(name) you focus for \(minutes)."
         )
     }
 

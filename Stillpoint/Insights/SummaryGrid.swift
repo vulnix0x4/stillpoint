@@ -20,7 +20,7 @@ struct SummaryGrid: View {
                 )
             }
             GridRow {
-                StatTile(title: "This week", value: TimeText.short(week), symbol: "calendar")
+                StatTile(title: "Last 7 days", value: TimeText.short(week), symbol: "calendar")
                 StatTile(
                     title: "Average depth",
                     value: averageDepth.map { $0.formatted(.number.precision(.fractionLength(1))) } ?? "–",

@@ -9,7 +9,7 @@ struct HomeHeader: View {
         HStack(alignment: .firstTextBaseline) {
             VStack(alignment: .leading, spacing: Theme.Spacing.hairline) {
                 Text(greeting)
-                    .font(.display)
+                    .font(.system(.title, design: .serif))
                 Text(now, format: .dateTime.weekday(.wide).day().month(.wide))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)

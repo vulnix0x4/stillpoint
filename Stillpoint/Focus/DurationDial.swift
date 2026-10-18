@@ -24,7 +24,7 @@ struct DurationDial: View {
             Circle()
                 .trim(from: 0, to: isFlow ? 1 : fraction)
                 .stroke(
-                    AngularGradient(colors: [palette.rim, palette.mid, palette.accent], center: .center),
+                    AngularGradient(colors: [palette.rim, palette.mid, palette.accent], center: .center, startAngle: .zero, endAngle: .degrees(360 * max(isFlow ? 1 : fraction, 0.01))),
                     style: StrokeStyle(lineWidth: Self.lineWidth, lineCap: .round)
                 )
                 .rotationEffect(.degrees(-90))

@@ -12,6 +12,10 @@ struct InsightsContent: View {
         let records = sessions.map(\.record)
         let stats = StatsCalculator()
         let insights = InsightGenerator().insights(for: records, now: now)
+        let firstDay = records.map(\.start).min().map(Calendar.current.startOfDay)
+        // Show as many weeks as there is history for, within a readable range.
+        let historyWeeks = firstDay.map { Int(now.timeIntervalSince($0) / 604_800) + 2 } ?? 8
+        let heatmapWeeks = min(18, max(8, historyWeeks))
 
         ScrollView {
             LazyVStack(alignment: .leading, spacing: Theme.Spacing.large) {
@@ -19,7 +23,7 @@ struct InsightsContent: View {
                     today: stats.focusedSeconds(records, on: now),
                     streak: stats.currentStreak(records, now: now),
                     longestStreak: stats.longestStreak(records),
-                    week: stats.weekTotal(records, containing: now),
+                    week: stats.dailyTotals(records, days: 7, endingOn: now).reduce(0) { $0 + $1.minutes * 60 },
                     averageDepth: stats.averageDepth(records)
                 )
 
@@ -35,7 +39,11 @@ struct InsightsContent: View {
                     }
                 }
 
-                FocusHeatmap(cells: stats.heatmap(records, weeks: 18, now: now), palette: palette)
+                FocusHeatmap(
+                    cells: stats.heatmap(records, weeks: heatmapWeeks, now: now),
+                    firstDay: firstDay,
+                    palette: palette
+                )
                     .cardSurface()
 
                 PeakHoursChart(hours: stats.hourlyTotals(records), palette: palette)

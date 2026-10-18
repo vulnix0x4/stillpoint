@@ -49,6 +49,8 @@ struct FocusSessionView: View {
             }
             .padding(.horizontal, Theme.Spacing.large)
             .padding(.vertical, Theme.Spacing.medium)
+            // The session stays put when the composer's keyboard appears.
+            .ignoresSafeArea(.keyboard)
 
             if isShowingParkedToast {
                 ParkedToast()
@@ -58,7 +60,7 @@ struct FocusSessionView: View {
             }
 
             if isComposing {
-                Color.black.opacity(0.45)
+                Color.black.opacity(0.55)
                     .ignoresSafeArea()
                     .onTapGesture(perform: stopComposing)
                     .accessibilityHidden(true)

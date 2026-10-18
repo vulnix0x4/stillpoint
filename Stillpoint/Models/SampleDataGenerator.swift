@@ -37,7 +37,7 @@ struct SampleDataGenerator {
             let skipChance = isWeekend ? 0.55 : 1 - consistency
             if dayOffset > 0, random.unit() < skipChance { continue }
 
-            let sessionCount = isWeekend ? 1 : 1 + Int(random.unit() * 3.2)
+            let sessionCount = isWeekend ? 1 : 2 + Int(random.unit() * 2.6)
             var hour = 8 + Int(random.unit() * 2)
             for _ in 0..<sessionCount {
                 guard let start = calendar.date(bySettingHour: hour, minute: Int(random.unit() * 50), second: 0, of: day),
@@ -49,7 +49,7 @@ struct SampleDataGenerator {
             }
         }
 
-        for (index, text) in Self.thoughts.prefix(4).enumerated() {
+        for (index, text) in Self.thoughts.suffix(3).enumerated() {
             context.insert(ParkedThought(text: text, createdAt: now.addingTimeInterval(Double(-index) * 5_400)))
         }
         try? context.save()
@@ -84,15 +84,15 @@ struct SampleDataGenerator {
         session.isFinalized = true
         context.insert(session)
 
-        if random.unit() < 0.45 {
-            let count = 1 + Int(random.unit() * 2.5)
+        if random.unit() < 0.35 {
+            let count = 1 + Int(random.unit() * 1.8)
             for index in 0..<count {
                 let thought = ParkedThought(
                     text: Self.thoughts[Int(random.unit() * Double(Self.thoughts.count)) % Self.thoughts.count],
                     createdAt: start.addingTimeInterval(Double(index + 1) * 420),
                     session: session
                 )
-                if random.unit() < 0.8 {
+                if random.unit() < 0.93 {
                     thought.toggleDone(at: start.addingTimeInterval(session.focusedDuration + 600))
                 }
                 context.insert(thought)

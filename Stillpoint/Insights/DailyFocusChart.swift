@@ -49,10 +49,13 @@ struct DailyFocusChart: View {
                 RuleMark(y: .value("Goal", goalMinutes))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
                     .foregroundStyle(.secondary)
-                    .annotation(position: .top, alignment: .leading) {
+                    .annotation(position: .top, alignment: .trailing, spacing: 2) {
                         Text("Goal")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .bold()
+                            .padding(.horizontal, Theme.Spacing.tight)
+                            .padding(.vertical, Theme.Spacing.hairline)
+                            .background(Theme.canvas.opacity(0.85), in: .capsule)
                     }
             }
             .chartXAxis {

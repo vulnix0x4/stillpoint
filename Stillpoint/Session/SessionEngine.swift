@@ -1,14 +1,27 @@
 import Foundation
 import Observation
+import os
 import SwiftData
 
 /// Runs a focus session from arrival to reflection, and keeps every side effect in step:
 /// sound, Live Activity, notifications, screen wake, persistence and widgets.
 @Observable
 final class SessionEngine {
-    private(set) var stage: SessionStage = .idle
+    private(set) var stage: SessionStage = .idle {
+        didSet {
+            if stage != oldValue {
+                logger.info("Stage \(String(describing: oldValue)) → \(String(describing: self.stage))")
+            }
+        }
+    }
     /// Drives the full-screen session presentation.
-    var isSessionPresented = false
+    var isSessionPresented = false {
+        didSet {
+            if isSessionPresented != oldValue {
+                logger.info("Presented \(self.isSessionPresented) at stage \(String(describing: self.stage))")
+            }
+        }
+    }
     private(set) var plan = SessionPlan()
     private(set) var clock: SessionClock?
     private(set) var calm = CalmTracker()
@@ -26,6 +39,7 @@ final class SessionEngine {
     @ObservationIgnored private let store: ActiveSessionStore
     @ObservationIgnored private var tickTask: Task<Void, Never>?
     @ObservationIgnored private var reportedDepth: FocusDepth?
+    @ObservationIgnored private let logger = Logger(subsystem: "dev.stillpoint", category: "session")
 
     init(modelContext: ModelContext, sound: SoundscapeEngine, defaults: UserDefaults = .standard) {
         self.modelContext = modelContext
@@ -102,7 +116,7 @@ final class SessionEngine {
         }
         ScreenAwake.set(defaults.bool(forKey: PreferenceKey.keepScreenAwake, default: PreferenceKey.Default.keepScreenAwake))
         scheduleNotification()
-        if defaults.bool(forKey: PreferenceKey.liveActivitiesEnabled, default: PreferenceKey.Default.liveActivitiesEnabled) {
+        if liveActivitiesEnabled {
             liveActivity.start(attributes: activityAttributes, state: activityState(at: now))
         }
         persist()
@@ -172,8 +186,8 @@ final class SessionEngine {
         liveActivity.end()
         sound.release(.session)
         ScreenAwake.set(false)
-        store.clear()
         stage = .reflecting
+        persist()
     }
 
     // MARK: - Reflection
@@ -185,6 +199,7 @@ final class SessionEngine {
         activeSession.note = note.trimmingCharacters(in: .whitespacesAndNewlines)
         activeSession.isFinalized = true
         try? modelContext.save()
+        store.clear()
         WidgetSync.refresh(using: modelContext, defaults: defaults)
         reset()
     }
@@ -198,6 +213,7 @@ final class SessionEngine {
             ScreenAwake.set(false)
             store.clear()
         }
+        store.clear()
         if let activeSession {
             modelContext.delete(activeSession)
             try? modelContext.save()
@@ -209,8 +225,14 @@ final class SessionEngine {
 
     /// Brings back a session that was running when the app was terminated.
     func restoreIfNeeded(at now: Date = .now) {
-        guard stage == .idle, let saved = store.load() else { return }
+        logger.info("Restore requested at stage \(String(describing: self.stage))")
+        guard stage == .idle else { return }
+        guard let saved = store.load() else {
+            cleanUpAbandonedSessions(keeping: nil)
+            return
+        }
         let id = saved.sessionID
+        cleanUpAbandonedSessions(keeping: id)
         let descriptor = FetchDescriptor<FocusSession>(predicate: #Predicate { $0.id == id })
         guard let session = try? modelContext.fetch(descriptor).first else {
             store.clear()
@@ -222,16 +244,43 @@ final class SessionEngine {
         calm = saved.calm
         goalReached = saved.goalReached
         activeSession = session
-        stage = .focusing
         isSessionPresented = true
+
+        // Focus already ended; only the reflection was interrupted.
+        if saved.isReflecting == true {
+            stage = .reflecting
+            return
+        }
+
+        stage = .focusing
         reportedDepth = frame(at: now).depth
 
         liveActivity.adoptExisting()
+        if !liveActivity.isRunning, liveActivitiesEnabled {
+            liveActivity.start(attributes: activityAttributes, state: activityState(at: now))
+        } else {
+            liveActivity.update(activityState(at: now))
+        }
         if !saved.clock.isPaused {
             sound.acquire(.session)
         }
         ScreenAwake.set(defaults.bool(forKey: PreferenceKey.keepScreenAwake, default: PreferenceKey.Default.keepScreenAwake))
         startTicking()
+    }
+
+    /// Sessions that were never reflected on and aren't being restored: keep anything
+    /// substantial (counted, unrated), drop the rest.
+    private func cleanUpAbandonedSessions(keeping keptID: UUID?) {
+        let descriptor = FetchDescriptor<FocusSession>(predicate: #Predicate { !$0.isFinalized })
+        guard let abandoned = try? modelContext.fetch(descriptor) else { return }
+        for session in abandoned where session.id != keptID {
+            if session.focusedDuration >= 60 {
+                session.isFinalized = true
+            } else {
+                modelContext.delete(session)
+            }
+        }
+        try? modelContext.save()
     }
 
     // MARK: - Ticking
@@ -251,7 +300,9 @@ final class SessionEngine {
         tickTask = nil
     }
 
-    private func tick(at now: Date) {
+    /// Advances time-based state. Called every second while focusing; internal so tests can
+    /// drive time directly.
+    func tick(at now: Date) {
         guard stage == .focusing, let clock else { return }
 
         if !goalReached, clock.hasReachedGoal(at: now) {
@@ -282,6 +333,10 @@ final class SessionEngine {
     }
 
     // MARK: - Helpers
+
+    private var liveActivitiesEnabled: Bool {
+        defaults.bool(forKey: PreferenceKey.liveActivitiesEnabled, default: PreferenceKey.Default.liveActivitiesEnabled)
+    }
 
     private var chimeEnabled: Bool {
         defaults.bool(forKey: PreferenceKey.chimeEnabled, default: PreferenceKey.Default.chimeEnabled)
@@ -335,7 +390,8 @@ final class SessionEngine {
             plan: plan,
             clock: clock,
             calm: calm,
-            goalReached: goalReached
+            goalReached: goalReached,
+            isReflecting: stage == .reflecting
         ))
     }
 

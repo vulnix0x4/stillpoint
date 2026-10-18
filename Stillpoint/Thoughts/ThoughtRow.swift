@@ -5,7 +5,7 @@ struct ThoughtRow: View {
     @Bindable var thought: ParkedThought
 
     var body: some View {
-        HStack(alignment: .top, spacing: Theme.Spacing.medium) {
+        HStack(spacing: Theme.Spacing.small) {
             Button(thought.isDone ? "Reopen" : "Mark done", systemImage: thought.isDone ? "checkmark.circle.fill" : "circle", action: toggle)
                 .labelStyle(.iconOnly)
                 .font(.title3)
@@ -23,7 +23,7 @@ struct ThoughtRow: View {
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
             }
-            .padding(.vertical, Theme.Spacing.small)
+            .padding(.vertical, Theme.Spacing.tight)
         }
         .listRowBackground(Theme.surface)
         .swipeActions(edge: .leading) {

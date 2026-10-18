@@ -17,9 +17,9 @@ struct LiveSessionDisplay: View {
                 ZStack {
                     ProgressRing(progress: frame.progress, palette: palette, isOpenEnded: frame.isOpenEnded, isComplete: frame.goalReached)
                     RippleRing(trigger: parkedCount, color: palette.core)
-                        .padding(22)
+                        .padding(70)
                     OrbRenderer(palette: palette, time: orbTime, turbulence: frame.turbulence, energy: frame.energy)
-                        .padding(22)
+                        .padding(8)
                         .opacity(frame.isPaused ? 0.5 : 1)
                     SessionTimeLabel(frame: frame)
                 }

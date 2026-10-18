@@ -3,6 +3,8 @@ import SwiftUI
 /// A calendar of the last few months, one square per day, brighter for more focus.
 struct FocusHeatmap: View {
     var cells: [[HeatmapCell]]
+    /// The first day with any history, so days before it aren't counted as missed.
+    var firstDay: Date?
     var palette: OrbPalette
 
     @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
@@ -11,7 +13,7 @@ struct FocusHeatmap: View {
 
     var body: some View {
         let activeDays = cells.joined().count { $0.minutes >= 1 && !$0.isFuture }
-        let totalDays = cells.joined().count { !$0.isFuture }
+        let totalDays = cells.joined().count { !$0.isFuture && $0.date >= (firstDay ?? .distantPast) }
 
         VStack(alignment: .leading, spacing: Theme.Spacing.medium) {
             VStack(alignment: .leading, spacing: Theme.Spacing.hairline) {

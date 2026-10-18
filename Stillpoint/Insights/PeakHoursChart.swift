@@ -24,12 +24,12 @@ struct PeakHoursChart: View {
                 BarMark(
                     x: .value("Hour", hour.hour),
                     y: .value("Minutes", hour.minutes),
-                    width: .ratio(0.7)
+                    width: .fixed(8)
                 )
                 .foregroundStyle(hour.hour == peak?.hour ? palette.accent : palette.rim.mix(with: .white, by: 0.15))
                 .cornerRadius(3)
             }
-            .chartXScale(domain: 0...23)
+            .chartXScale(domain: -0.5...23.5)
             .chartXAxis {
                 AxisMarks(values: [0, 6, 12, 18]) { value in
                     AxisValueLabel {

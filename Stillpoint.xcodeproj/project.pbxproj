@@ -38,6 +38,7 @@
 		298A525AF7FA5BC9E092437C /* SignalGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78B10187F8669B26792D21F7 /* SignalGenerator.swift */; };
 		2B06AD895AD42EDE5FAA54CE /* DailyFocusChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E3BA5BD608276493F5BFE2E /* DailyFocusChart.swift */; };
 		2BDFA1A1E2149C1DE9C3CBA8 /* Insight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 690BE53ABAC047F3B2D3C5E4 /* Insight.swift */; };
+		2C1606242A16A71734ECF9E7 /* SessionEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3FEAC1625C21D6285B0DFA /* SessionEngineTests.swift */; };
 		2D34EC7A52B3F85D81039974 /* StatsCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90D8AC969ECE149E7BD507D /* StatsCalculatorTests.swift */; };
 		2F95C42455F84EE870F81418 /* GoalRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C24EFA46D8037256F792B49 /* GoalRing.swift */; };
 		2FE071FB2BE3C34FAC1DC544 /* Filters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E282A811FD7152CEAA7CB0 /* Filters.swift */; };
@@ -57,6 +58,7 @@
 		437E05DAFE5B6D80CE7244A3 /* TodayProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593346945683103FFEE66AC8 /* TodayProvider.swift */; };
 		467849E45C20B21A70A1E3D4 /* NoiseColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741621DC5FD11C4A1A6B41D8 /* NoiseColor.swift */; };
 		47F96E8328BADA843AF77514 /* SessionPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37FEBEF1EDFC4FC43FBE3C78 /* SessionPlan.swift */; };
+		48E22B51004ABC6280790CDC /* NavigationBarStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0DE0936C3307487BB07506 /* NavigationBarStyle.swift */; };
 		4966629546869CB3FBB78AD9 /* SessionContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56B36E7E7E264CD36BA7BE93 /* SessionContainerView.swift */; };
 		4993E57F017854C59014354F /* HoldToEndButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E29705DD6B6A5864835CE5D5 /* HoldToEndButton.swift */; };
 		4AE440466BE28BDBFBBCD0FA /* BreathState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60BBDC109A7CECC7C5DD1BD7 /* BreathState.swift */; };
@@ -215,6 +217,7 @@
 		1A5E9E85299A20D0386A8422 /* OceanGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OceanGenerator.swift; sourceTree = "<group>"; };
 		1ABD24796DB6BAC572FF88E0 /* TodaySummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodaySummary.swift; sourceTree = "<group>"; };
 		1B4AF6E330E8D2CC0341B66A /* AtomicFloat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicFloat.swift; sourceTree = "<group>"; };
+		1E3FEAC1625C21D6285B0DFA /* SessionEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionEngineTests.swift; sourceTree = "<group>"; };
 		1EA9FE91EAA8C757D6158EC2 /* PalettePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PalettePicker.swift; sourceTree = "<group>"; };
 		1EEF24A3387C0AEB2BDCDDF2 /* BreathHaptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathHaptics.swift; sourceTree = "<group>"; };
 		235176AA4C471C92DC0B4651 /* OnboardingGoalPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingGoalPage.swift; sourceTree = "<group>"; };
@@ -356,6 +359,7 @@
 		F80D840B8DE10CBF63CF3F84 /* IntentionField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentionField.swift; sourceTree = "<group>"; };
 		F812290443953B8410891265 /* AppTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTab.swift; sourceTree = "<group>"; };
 		F97D832A3082D1BB615FEFAC /* TodayProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayProgress.swift; sourceTree = "<group>"; };
+		FA0DE0936C3307487BB07506 /* NavigationBarStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarStyle.swift; sourceTree = "<group>"; };
 		FCB57DFD42D48B6C3CCB08D2 /* NewThoughtBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewThoughtBar.swift; sourceTree = "<group>"; };
 		FCFE0879FC1E6193B029A896 /* BrownNoiseGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrownNoiseGenerator.swift; sourceTree = "<group>"; };
 		FE37F5933E7D1F8E22E0AFC2 /* SessionTimeLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionTimeLabel.swift; sourceTree = "<group>"; };
@@ -419,6 +423,7 @@
 				44B11F8A95423548ADE6DAD2 /* AmbientBackground.swift */,
 				8E36B5111F6149888D4CDF9A /* CardSurface.swift */,
 				0ACA256F91A19EE332A0035A /* LivingOrb.swift */,
+				FA0DE0936C3307487BB07506 /* NavigationBarStyle.swift */,
 				92743CA8BD4B41B5C5B3A615 /* OrbRenderer.swift */,
 				DBD9F1843A1CDC5A67CE6C66 /* SectionTitle.swift */,
 				0AD2AD5085560DE487A476C1 /* Shaders.metal */,
@@ -572,6 +577,7 @@
 				59C1BD0C1BF399103454CEAB /* FocusDepthTests.swift */,
 				8A0F900A12972481965CB2DC /* InsightGeneratorTests.swift */,
 				256DB3F311C778E6A7DC5ECB /* SessionClockTests.swift */,
+				1E3FEAC1625C21D6285B0DFA /* SessionEngineTests.swift */,
 				CEBB41C6C30B58912DE93789 /* SoundTests.swift */,
 				B90D8AC969ECE149E7BD507D /* StatsCalculatorTests.swift */,
 				271EADB12DD58E08CF5F4BDD /* WidgetSnapshotTests.swift */,
@@ -839,6 +845,7 @@
 				A8346A99ADF3076B9773A616 /* FocusDepthTests.swift in Sources */,
 				0ABA80AC92D90AA869549B60 /* InsightGeneratorTests.swift in Sources */,
 				5FFD069013A3A2FBC45ADBF8 /* SessionClockTests.swift in Sources */,
+				2C1606242A16A71734ECF9E7 /* SessionEngineTests.swift in Sources */,
 				AF0035BB18AF11D72E6C4D58 /* SoundTests.swift in Sources */,
 				2D34EC7A52B3F85D81039974 /* StatsCalculatorTests.swift in Sources */,
 				05E144D2E53A9B4C609853BE /* WidgetSnapshotTests.swift in Sources */,
@@ -904,6 +911,7 @@
 				9A5198642EB900E12AE849A0 /* LiveSessionDisplay.swift in Sources */,
 				13DD8EC548CCEDA12BCC17FB /* LivingOrb.swift in Sources */,
 				F59689FA18FDF9C64396BB51 /* ModelContainerFactory.swift in Sources */,
+				48E22B51004ABC6280790CDC /* NavigationBarStyle.swift in Sources */,
 				9E776F45AF9CD2D0B108625B /* NewThoughtBar.swift in Sources */,
 				467849E45C20B21A70A1E3D4 /* NoiseColor.swift in Sources */,
 				866DEB7E1D7D8A227D5F3EB2 /* NotificationScheduler.swift in Sources */,
@@ -1028,7 +1036,6 @@
 				INFOPLIST_FILE = Stillpoint/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Stillpoint;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
@@ -1073,7 +1080,6 @@
 				INFOPLIST_FILE = Stillpoint/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Stillpoint;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;

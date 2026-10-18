@@ -7,4 +7,7 @@ nonisolated struct PersistedSession: Codable, Equatable, Sendable {
     var clock: SessionClock
     var calm: CalmTracker
     var goalReached: Bool
+    /// `true` once focus has ended and only the reflection remains. Optional so data written
+    /// by earlier versions still decodes.
+    var isReflecting: Bool?
 }

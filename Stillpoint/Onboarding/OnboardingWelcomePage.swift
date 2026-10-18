@@ -4,6 +4,8 @@ struct OnboardingWelcomePage: View {
     var palette: OrbPalette
     var next: () -> Void
 
+    @ScaledMetric(relativeTo: .largeTitle) private var titleSize = 44.0
+
     var body: some View {
         VStack(spacing: Theme.Spacing.large) {
             Spacer(minLength: 0)
@@ -12,7 +14,7 @@ struct OnboardingWelcomePage: View {
                 .aspectRatio(1, contentMode: .fit)
             VStack(spacing: Theme.Spacing.small) {
                 Text("Stillpoint")
-                    .font(.system(size: 44, design: .serif))
+                    .font(.system(size: titleSize, design: .serif))
                 Text("Attention is where your life actually happens. Give it somewhere quiet to land.")
                     .font(.title3)
                     .multilineTextAlignment(.center)

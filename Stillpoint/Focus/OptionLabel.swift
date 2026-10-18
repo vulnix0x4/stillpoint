@@ -20,6 +20,7 @@ struct OptionLabel: View {
                     .font(.subheadline)
                     .bold()
                     .lineLimit(1)
+                    .minimumScaleFactor(0.75)
             }
             Spacer(minLength: 0)
         }

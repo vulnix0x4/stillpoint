@@ -16,6 +16,7 @@ struct StillpointApp: App {
         _sound = State(initialValue: sound)
         _engine = State(initialValue: engine)
 
+        NavigationBarStyle.apply()
         AppDependencyManager.shared.add(dependency: engine)
         LaunchArguments.apply(to: container.mainContext)
     }
