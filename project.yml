@@ -1,0 +1,88 @@
+name: Stillpoint
+options:
+  bundleIdPrefix: dev.stillpoint
+  deploymentTarget:
+    iOS: "26.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Automatic
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    SWIFT_APPROACHABLE_CONCURRENCY: YES
+    SWIFT_STRICT_CONCURRENCY: complete
+    ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: YES
+    STRING_CATALOG_GENERATE_SYMBOLS: NO
+targets:
+  Stillpoint:
+    type: application
+    platform: iOS
+    sources:
+      - path: Stillpoint
+      - path: Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.stillpoint.Stillpoint
+        PRODUCT_NAME: Stillpoint
+        SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
+        TARGETED_DEVICE_FAMILY: "1,2"
+        CODE_SIGN_ENTITLEMENTS: Stillpoint/Stillpoint.entitlements
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        INFOPLIST_FILE: Stillpoint/Info.plist
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Stillpoint
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
+        INFOPLIST_KEY_UIStatusBarStyle: UIStatusBarStyleLightContent
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
+    dependencies:
+      - target: StillpointWidgets
+        embed: true
+  StillpointWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: StillpointWidgets
+      - path: Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.stillpoint.Stillpoint.Widgets
+        PRODUCT_NAME: StillpointWidgets
+        TARGETED_DEVICE_FAMILY: "1,2"
+        CODE_SIGN_ENTITLEMENTS: StillpointWidgets/StillpointWidgets.entitlements
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_FILE: StillpointWidgets/Info.plist
+        INFOPLIST_KEY_CFBundleDisplayName: Stillpoint
+        SKIP_INSTALL: YES
+  StillpointTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: StillpointTests
+    dependencies:
+      - target: Stillpoint
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.stillpoint.StillpointTests
+        GENERATE_INFOPLIST_FILE: YES
+        SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/Stillpoint.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Stillpoint"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+schemes:
+  Stillpoint:
+    build:
+      targets:
+        Stillpoint: all
+        StillpointTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - StillpointTests
