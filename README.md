@@ -6,6 +6,24 @@ Stillpoint is a native iOS deep-focus app. You name one intention, settle in wit
 
 Built with SwiftUI for iOS 26, Swift 6 strict concurrency, SwiftData, Metal shaders, AVAudioEngine, ActivityKit, WidgetKit and App Intents. It uses no third-party dependencies, no network, no accounts and no tracking.
 
+<p align="center">
+  <img src="docs/screenshots/home.jpg" width="200" alt="Home: duration dial around the orb, intention, sound and breathing options">
+  <img src="docs/screenshots/session.jpg" width="200" alt="A focus session with the orb, countdown and depth stage">
+  <img src="docs/screenshots/overtime.jpg" width="200" alt="Goal reached: the timer keeps counting in flow">
+  <img src="docs/screenshots/reflection.jpg" width="200" alt="Reflection: outcome, depth rating and parked thoughts">
+</p>
+<p align="center">
+  <img src="docs/screenshots/insights.jpg" width="200" alt="Insights: today, streak, last 7 days and focus chart">
+  <img src="docs/screenshots/patterns.jpg" width="200" alt="Generated insights and the consistency heatmap">
+  <img src="docs/screenshots/onboarding.jpg" width="200" alt="Onboarding">
+</p>
+<p align="center">
+  <img src="docs/screenshots/island.jpg" width="400" alt="Expanded Dynamic Island during a session">
+  <img src="docs/screenshots/widget.jpg" width="400" alt="Today's Focus home screen widget">
+</p>
+
+*Screenshots from the iOS 27 simulator with sample data.*
+
 ---
 
 ## Features
